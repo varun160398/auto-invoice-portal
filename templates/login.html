@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login • PROJECT_INVOICE</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container" style="max-width:520px;">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">WI</div>
+        <div>
+          <div class="title">PROJECT_INVOICE</div>
+          <div class="subtitle">Employee Login</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <h2 style="margin-bottom:10px;">Login</h2>
+
+      {% if error %}
+        <div class="status error" style="margin-bottom:10px;">{{ error }}</div>
+      {% endif %}
+
+      <form method="post" action="/login">
+        <label>Login ID</label>
+        <input class="sigFile" name="login_id" placeholder="sa" />
+
+        <label style="margin-top:10px;">Password</label>
+        <input class="sigFile" type="password" name="password" placeholder="sa123" />
+
+        <button class="btn" style="margin-top:14px; width:100%;">Login</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

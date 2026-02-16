@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PROJECT_INVOICE</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">WI</div>
+        <div>
+          <div class="title">PROJECT_INVOICE</div>
+          <div class="subtitle">Auto tax invoices • signatures • PDF/ZIP</div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <select id="monthSel" class="sigFile" style="width:160px;">
+          {% for m in months %}
+            <option value="{{m}}" {% if m == sel_month %}selected{% endif %}>{{m}}</option>
+          {% endfor %}
+        </select>
+
+        <select id="yearSel" class="sigFile" style="width:120px;">
+          {% for y in years %}
+            <option value="{{y}}" {% if (y|string) == (sel_year|string) %}selected{% endif %}>{{y}}</option>
+          {% endfor %}
+        </select>
+
+        <a class="btn" href="/download-all.zip">⬇ Download All (ZIP)</a>
+        <a class="btn secondary" href="/logout">Logout</a>
+      </div>
+    </div>
+
+    <div class="grid">
+      {% for e in experts %}
+      <div class="card" data-name="{{ e.expert_name }}">
+        <div class="head">
+          <h2>{{ e.expert_name }}</h2>
+          <span class="badge {{ 'ok' if e.has_signature else 'warn' }}">
+            {{ 'Signature Uploaded' if e.has_signature else 'No Signature' }}
+          </span>
+        </div>
+
+        <div class="meta">
+          <div><b>Phone:</b> {{ e.phone }}</div>
+          <div><b>Email:</b> {{ e.email }}</div>
+          <div><b>Address:</b> {{ e.address }}</div>
+          <div class="row2">
+            <div><b>Invoice No:</b> {{ e.invoice_number }}</div>
+            <div><b>Payment:</b> {{ e.payment_status }}</div>
+          </div>
+          <div class="row2">
+            <div><b>Total Sales:</b> {{ e.total_sales }}</div>
+            <div><b>Commission:</b> {{ e.commission }}</div>
+          </div>
+        </div>
+
+        <div class="upload">
+          <label>Upload Signature (PNG/JPG)</label>
+          <input type="file" class="sigFile fileInput" accept=".png,.jpg,.jpeg,.webp" />
+          <button class="uploadBtn">Upload</button>
+          <div class="status"></div>
+        </div>
+
+        <div class="actions">
+          <a class="btn secondary downloadPdf" href="/invoice.pdf?name={{ e.expert_name | urlencode }}" target="_blank">
+            ⬇ Download PDF
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <script src="/static/main.js"></script>
+</body>
+</html>
