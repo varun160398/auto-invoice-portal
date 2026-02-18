@@ -3,6 +3,7 @@ import io
 import zipfile
 from datetime import datetime, timedelta
 
+from numpy import size
 import pandas as pd
 from flask import Flask, render_template, request, jsonify, send_file, abort, redirect, url_for, session
 from werkzeug.utils import secure_filename
@@ -99,6 +100,8 @@ def load_data():
 
     df = pd.read_excel(excel_path, sheet_name=config.SHEET_NAME, engine="openpyxl")
     sdf = standardize_df(df)
+    for col in sdf.columns:
+        sdf[col] = sdf[col].apply(clean_text)
 
     for col in ["total_sales", "commission", "account_no"]:
         sdf[col] = sdf[col].apply(lambda x: "" if str(x).strip().lower() in ("nan", "none") else x)
@@ -106,6 +109,26 @@ def load_data():
     return sdf
 
 # ---------------- misc utils ----------------
+
+import re
+
+def clean_text(s):
+    if s is None:
+        return ""
+    s = str(s)
+
+    # Replace NBSP with normal space
+    s = s.replace("\u00A0", " ")
+
+    # Remove zero-width / direction / formatting marks
+    s = re.sub(r"[\u200B-\u200F\u202A-\u202E\u2060-\u206F]", "", s)
+
+    # Remove common black-square glyphs if they exist
+    s = s.replace("\u25A0", "").replace("\u25AA", "").replace("■", "")
+
+    # Normalize whitespace
+    s = re.sub(r"\s+", " ", s).strip()
+    return s
 
 def safe_filename(s: str) -> str:
     return secure_filename(str(s)).strip("_")
@@ -215,11 +238,12 @@ def draw_invoice_pdf(row: dict, signature_path: str | None = None) -> bytes:
 
     def txt(x, y, s, size=10, bold=False):
         font(size, bold)
-        c.drawString(x, y, str(s))
+        c.drawString(x, y, clean_text(s))
 
     def rtxt(x, y, s, size=10, bold=False):
         font(size, bold)
-        c.drawRightString(x, y, str(s))
+        c.drawRightString(x, y, clean_text(s))
+
 
     def line(x1, y1, x2, y2):
         c.setLineWidth(0.8)
