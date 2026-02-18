@@ -1,6 +1,7 @@
 import os
 import io
 import zipfile
+import re
 from datetime import datetime, timedelta
 
 from numpy import size
@@ -110,7 +111,7 @@ def load_data():
 
 # ---------------- misc utils ----------------
 
-import re
+
 
 def clean_text(s):
     if s is None:
