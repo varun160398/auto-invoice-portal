@@ -259,7 +259,7 @@ def draw_invoice_pdf(row: dict, signature_path: str | None = None) -> bytes:
 
     # Right meta (Invoice no + Period)
     rtxt(right, y - 6, f"Invoice No: {row.get('invoice_number','')}", size=10, bold=True)
-    rtxt(right, y - 20, f"Period: {month} {year}", size=10)
+    rtxt(right, y - 20, f"{month} {year}", size=10)
 
     # Left Issuer (Expert)
     txt(left, y, str(row.get("expert_name", "")).upper(), size=14, bold=True); y -= 14
